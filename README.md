@@ -1,4 +1,4 @@
-[![Gem Version](https://badge.fury.io/rb/ruby-jive-signed_request.svg)](http://badge.fury.io/rb/ruby-jive-signed_request)
+[![Gem Version](https://badge.fury.io/rb/jive-signed_request.svg)](http://badge.fury.io/rb/jive-signed_request)
 [![Build Status](https://travis-ci.org/butchmarshall/ruby-jive-signed_request.svg?branch=master)](https://travis-ci.org/butchmarshall/ruby-jive-signed_request)
 
 # Jive::SignedRequest
