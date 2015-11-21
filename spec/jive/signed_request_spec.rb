@@ -68,6 +68,21 @@ describe Jive::SignedRequest do
 	end
 
 	describe '::Jive::SignedRequest.validate_registration' do
+		it 'should validate using the provided sdk data', :focus => true do
+			result = ::Jive::SignedRequest.validate_registration({  
+				#code: "nki1dxrtl3r2q3kkgorwfkrmik234ppw.c",
+				#scope: "uri:/api",
+				clientId: "i5j15eikcd5u2xntgk5zu4lt93zkgx6z.i",
+				tenantId: "0ee9ae5c-4702-49eb-a716-3d46de4b10d3",
+				jiveSignatureURL: "https://market.apps.jivesoftware.com/appsmarket/services/rest/jive/instance/validation/29c38d1a-9c8a-4ec5-9b55-56fc44a5a402",
+				clientSecret: "7wmyigctxbopc22jo7u4xorxsn2m9r04.s",
+				jiveSignature: "dtuW522kpoayRLFkPq6l3MOXxoKwfyNHsgGMlitr9PM=",
+				jiveUrl: "http://ws-z0-120493.jiveland.com:8080",
+				timestamp: "2013-07-12T15:28:46.493Z"  
+			})
+			expect(result).to eq(true)
+		end
+		
 		it 'should validate authentic registrations', :focus => true do
 			result = ::Jive::SignedRequest.validate_registration({
 				clientId: '2zm4rzr9aiuvd4zhhg8kyfep229p2gce.i',
