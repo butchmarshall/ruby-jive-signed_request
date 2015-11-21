@@ -80,5 +80,52 @@ module Jive # :nodoc:
 
 			self.sign(authorization_header.gsub(/^JiveEXTN\s/,'').gsub(/\&signature[^$]+/,''), client_secret) === paramMap["signature"].first
 		end
+		
+		# Validates an app registration
+		#
+		# Validates an app registration came from where it claims via jiveSignatureURL
+		#
+		# * *Args*    :
+		#   - +validationBlock+ -> the request body of the registration
+		#   - +args+ -> additional arguments
+		# * *Returns* :
+		#   - boolean
+		#
+		def validate_registration(validationBlock, *args)
+			options = ((args.last.is_a?(Hash)) ? args.pop : {})
+
+			require "open-uri"
+			require "net/http"
+			require "openssl"
+
+			jive_signature_url = validationBlock[:jiveSignatureURL]
+			jive_signature = validationBlock[:jiveSignature]
+
+			validationBlock.delete(:jiveSignature)
+
+			if !validationBlock[:clientSecret].nil?
+				validationBlock[:clientSecret] = Digest::SHA256.hexdigest(validationBlock[:clientSecret])
+			end
+
+			uri = URI.parse(jive_signature_url)
+			http = Net::HTTP.new(uri.host, uri.port)
+			http.use_ssl = true
+			http.verify_mode = OpenSSL::SSL::VERIFY_NONE if http.use_ssl? && !options[:verify_ssl]
+
+			buffer = ''
+			validationBlock.sort.to_h.each_pair { |k,v|
+				buffer = "#{buffer}#{k}:#{v}\n"
+			}
+
+			request = Net::HTTP::Post.new(uri.request_uri)
+			request.body = buffer
+
+			request["X-Jive-MAC"] = jive_signature
+			request["Content-Type"] = "application/json"
+
+			response = http.request(request)
+
+			(response.code.to_i === 204)
+		end
  	end
 end
