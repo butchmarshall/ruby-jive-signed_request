@@ -113,7 +113,9 @@ module Jive # :nodoc:
 			http.verify_mode = OpenSSL::SSL::VERIFY_NONE if http.use_ssl? && !options[:verify_ssl]
 
 			buffer = ''
-			validationBlock.sort.to_h.each_pair { |k,v|
+			validationBlock = validationBlock.sort
+
+			(validationBlock.respond_to?(:to_h) ? validationBlock.to_h : Hash[validationBlock] ).each_pair { |k,v|
 				buffer = "#{buffer}#{k}:#{v}\n"
 			}
 
